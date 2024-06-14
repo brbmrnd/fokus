@@ -2,19 +2,29 @@ const html = document.querySelector('html');
 const focusButton = document.querySelector('.app__card-button--foco');
 const shortButton = document.querySelector('.app__card-button--curto');
 const longButton = document.querySelector('.app__card-button--longo');
+const startPauseButton = document.querySelector('#start-pause');
+const startPauseDisplay = document.querySelector('#start-pause span');
+const startPauseIcon = document.querySelector('.app__card-primary-button-icon');
 const buttons = document.querySelectorAll('.app__card-button');
 const imgContext = document.querySelector('.app__image');
 const textContext = document.querySelector('.app__title');
 const musicFocusBox = document.querySelector('#alternar-musica');
-const music = new Audio('/sons/luna-rise-part-one.mp3');
+const musicTheme = new Audio('/sons/luna-rise-part-one.mp3');
+const musicPlay = new Audio('/sons/play.wav');
+const musicPause = new Audio('/sons/pause.mp3');
+const musicAlert = new Audio('/sons/beep.mp3');
 
-music.loop = true;
+
+let timeSeconds = 5;
+let interval = null;
+
+musicTheme.loop = true;
 
 musicFocusBox.addEventListener('change', () => {
-    if (music.paused) {
-        music.play();
+    if (musicTheme.paused) {
+        musicTheme.play();
     } else {
-        music.pause();
+        musicTheme.pause();
     }
 });
 
@@ -65,3 +75,35 @@ function changeContext(contexto) {
     }
 };
 
+const counting = () => {
+    if (timeSeconds <= 0) {
+        // musicAlert.play();
+        alert('O tempo acabou.');
+        zeroInterval();
+        return;
+    }
+
+    timeSeconds -= 1;
+    console.log('Tempo: ' + timeSeconds);
+};
+
+function startPause() {
+    if (interval) {
+        musicPause.play();
+        zeroInterval();
+        return;
+    }
+    interval = setInterval(counting, 1000);
+    musicPlay.play();
+    startPauseDisplay.textContent = 'Pausar';
+    startPauseIcon.setAttribute('src', "/imagens/pause.png");
+};
+
+function zeroInterval() {
+    clearInterval(interval);
+    startPauseDisplay.textContent = 'Começar';
+    startPauseIcon.setAttribute('src', "/imagens/play_arrow.png");
+    interval = null;
+};
+
+startPauseButton.addEventListener('click', startPause);
