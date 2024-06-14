@@ -8,14 +8,15 @@ const startPauseIcon = document.querySelector('.app__card-primary-button-icon');
 const buttons = document.querySelectorAll('.app__card-button');
 const imgContext = document.querySelector('.app__image');
 const textContext = document.querySelector('.app__title');
+const timer = document.querySelector('#timer');
+
 const musicFocusBox = document.querySelector('#alternar-musica');
 const musicTheme = new Audio('/sons/luna-rise-part-one.mp3');
 const musicPlay = new Audio('/sons/play.wav');
 const musicPause = new Audio('/sons/pause.mp3');
 const musicAlert = new Audio('/sons/beep.mp3');
 
-
-let timeSeconds = 5;
+let timeSeconds = 1500;
 let interval = null;
 
 musicTheme.loop = true;
@@ -29,21 +30,25 @@ musicFocusBox.addEventListener('change', () => {
 });
 
 focusButton.addEventListener('click', () => {
+    timeSeconds = 1500;
     changeContext('foco');
     focusButton.classList.add('active');
 });
 
 shortButton.addEventListener('click', () => {
+    timeSeconds = 300;
     changeContext('descanso-curto');
     shortButton.classList.add('active');
 });
 
 longButton.addEventListener('click', () => {
+    timeSeconds = 900;
     changeContext('descanso-longo');
     longButton.classList.add('active');
 });
 
 function changeContext(contexto) {
+    displayTime();
     buttons.forEach(function (contexto) {
         contexto.classList.remove('active');
     });
@@ -77,14 +82,14 @@ function changeContext(contexto) {
 
 const counting = () => {
     if (timeSeconds <= 0) {
-        // musicAlert.play();
+        musicAlert.play();
         alert('O tempo acabou.');
         zeroInterval();
         return;
     }
 
     timeSeconds -= 1;
-    console.log('Tempo: ' + timeSeconds);
+    displayTime();
 };
 
 function startPause() {
@@ -107,3 +112,11 @@ function zeroInterval() {
 };
 
 startPauseButton.addEventListener('click', startPause);
+
+function displayTime(){
+    const time = new Date(timeSeconds * 1000);
+    formatTimer = time.toLocaleTimeString('pt-Br', {minute: '2-digit', second: '2-digit'})
+    timer.innerHTML = `${formatTimer}`;
+}
+
+displayTime();
